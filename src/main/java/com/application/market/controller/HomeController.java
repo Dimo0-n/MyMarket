@@ -16,4 +16,14 @@ public class HomeController {
         return "error404";
     }
 
+    @GetMapping("/login")
+    public String login(){
+        return "auth";
+    }
+
+    @GetMapping("/profil")
+    public String profil(){
+        return "profil";
+    }
+
 }
