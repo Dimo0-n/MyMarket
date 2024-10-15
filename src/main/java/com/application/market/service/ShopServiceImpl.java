@@ -5,6 +5,8 @@ import com.application.market.entity.ProductDto;
 import com.application.market.repository.ShopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,11 +19,11 @@ public class ShopServiceImpl implements ShopService{
     private ShopRepository shopRepository;
 
     @Override
-    public List<ProductDto> getAllProducts() {
-        List<Product> products = shopRepository.findAll();
-        List<ProductDto> productDtos = new ArrayList<>(); // Lista pentru DTO-uri
+    public Page<ProductDto> getAllProducts(Pageable pageable) {
+        Page<Product> productsPage = shopRepository.findAll(pageable); // Obține pagina de produse
 
-        for(Product product : products){
+        // Mapează fiecare Product în ProductDto
+        return productsPage.map(product -> {
             Double pretCuDiscount = product.getProductPrice() * (100 - product.getDiscount()) / 100;
             Double pretFormatat = Math.round(pretCuDiscount * 10.0) / 10.0;
 
@@ -38,10 +40,8 @@ public class ShopServiceImpl implements ShopService{
             productDto.setBase64Image(product.getBase64Image());
             productDto.setProductDiscountPrice(String.valueOf(pretFormatat));
 
-            productDtos.add(productDto);
-        }
-
-        return productDtos;
+            return productDto;
+        });
     }
 
 

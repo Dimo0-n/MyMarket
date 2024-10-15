@@ -8,6 +8,47 @@
 
   <link rel="stylesheet"  th:href="@{/css/vendor.css}">
   <link rel="stylesheet"  th:href="@{/css/style.css}">
+
+  <style>
+    .pagination {
+      display: flex; /* Folosește flexbox pentru a alinia elementele */
+      justify-content: center; /* Centrează pe axa orizontală */
+      align-items: center; /* Centrează pe axa verticală */
+      margin: 20px 0; /* Spațiu deasupra și dedesubt */
+    }
+
+    .pagination .btn {
+      background-color: #007bff; /* Culoare de fundal pentru butoane */
+      color: white; /* Culoare text */
+      border: none; /* Elimină marginea */
+      border-radius: 5px; /* Colțuri rotunjite */
+      padding: 10px 15px; /* Spațiu interior pentru butoane */
+      margin: 0 5px; /* Spațiu între butoane */
+      font-size: 16px; /* Dimensiunea fontului */
+      cursor: pointer; /* Schimbă cursorul la hover */
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Umbră pentru butoane */
+      transition: background-color 0.3s, transform 0.2s; /* Efect de tranziție */
+      text-decoration: none; /* Elimină sublinierea */
+    }
+
+    .pagination .btn:hover {
+      background-color: #0056b3; /* Culoare de fundal la hover */
+      transform: translateY(-2px); /* Ușor ridicată la hover */
+    }
+
+    .pagination .disabled {
+      opacity: 0.6; /* Reduce opacitatea butoanelor dezactivate */
+      pointer-events: none; /* Dezactivează interacțiunea cu butoanele dezactivate */
+      background-color: #6c757d; /* Culoare de fundal pentru butoanele dezactivate */
+    }
+
+    .current-page,
+    .total-pages {
+      margin: 0 10px; /* Spațiu între numărul paginii și butoane */
+      font-size: 16px; /* Dimensiunea fontului */
+    }
+  </style>
+
 </head>
 <body>
 
@@ -112,7 +153,19 @@
               </div>
             </div>
           </th:block>
+        </div>
+        <br><br>
+        <div class="pagination">
+          <a th:href="@{/shop(page=${currentPage - 1})}"
+             th:class="${currentPage == 0} ? 'disabled' : ''"
+             class="btn" title="Previous Page"> &laquo; Previous</a>
 
+          <span class="current-page" th:text="${currentPage + 1}"></span> /
+          <span class="total-pages" th:text="${totalPages}"></span>
+
+          <a th:href="@{/shop(page=${currentPage + 1})}"
+             th:class="${currentPage == totalPages - 1} ? 'disabled' : ''"
+             class="btn" title="Next Page"> Next &raquo;</a>
         </div>
       </div>
     </div>
@@ -120,7 +173,6 @@
 </section>
 
 <!--    The most selling products end-->
-
 
 </body>
 
