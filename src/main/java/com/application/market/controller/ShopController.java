@@ -11,6 +11,8 @@ import com.application.market.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.data.domain.Pageable;
 
@@ -39,5 +41,21 @@ public class ShopController {
 
         return "shop";
     }
+
+    @GetMapping("/shop-{id}")
+    public String shopByCategory(@RequestParam(defaultValue = "0") int page, @PathVariable int id, Model model) {
+        List<Category> categories = categoryService.getAllCategories();
+
+        Pageable pageable = PageRequest.of(page, 20); // 20 produse pe pagină
+        Page<ProductDto> productPage = shopService.findAllProductsByCategory(pageable, id); // Returnează un Page
+
+        model.addAttribute("categories", categories);
+        model.addAttribute("products", productPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", productPage.getTotalPages());
+        return "shop";
+    }
+
+
 
 }

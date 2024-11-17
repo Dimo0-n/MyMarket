@@ -18,7 +18,6 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 public class User {
-    private static final long serialVersonUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,17 +26,8 @@ public class User {
     @Column(unique = true, name = "username")
     private String username;
 
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "surname")
-    private String surname;
-
     @Column(name = "email")
     private String email;
-
-    @Column(name = "phoneNumber")
-    private String phoneNumber;
 
     @Column(name = "password")
     private String password;
@@ -49,17 +39,11 @@ public class User {
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     private List<Role> roles = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "user_id")
-//    private List<Token> tokens;
-
     @Column(name = "registerDate")
     private LocalDateTime registerDate;
 
     @Column(name = "lastLoginDate")
     private LocalDateTime lastLoginDate;
-
-    @Column(name = "userType")
-    private String userType;
 
     @Lob
     @Column(name = "image",  columnDefinition = "LONGBLOB")
