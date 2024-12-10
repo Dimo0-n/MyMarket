@@ -24,7 +24,6 @@ public class CartServiceImpl implements CartService {
 
         CartItems cartItem = new CartItems();
 
-        cartItem.setId((long) id);
         cartItem.setCategory(product.get().getCategory());
         cartItem.setDiscount(product.get().getDiscount());
         cartItem.setPrice(product.get().getProductPrice());
