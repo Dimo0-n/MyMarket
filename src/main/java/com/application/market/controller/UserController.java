@@ -10,7 +10,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class UserController {
@@ -33,7 +32,6 @@ public class UserController {
     @PostMapping("/register")
     public String registerAndLoginRedirection(@Valid @ModelAttribute("user") User user,
                                               BindingResult bindingResult,
-                                              @RequestParam("formType") String formType,
                                               Model model) {
 
             if (bindingResult.hasErrors()) {
