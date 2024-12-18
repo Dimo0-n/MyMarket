@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import java.util.Random;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ShopServiceImpl implements ShopService{
@@ -50,7 +52,6 @@ public class ShopServiceImpl implements ShopService{
         List<Product> products = shopRepository.findBestSellingProducts();
         List<ProductDto> productDtos = new ArrayList<>();
 
-        // Limitează lista de produse la 10
         List<Product> limitedProducts = products.stream()
                 .limit(10)
                 .toList();
@@ -102,6 +103,41 @@ public class ShopServiceImpl implements ShopService{
             return productDto;
         });
     }
+
+    @Override
+    public List<ProductDto> getFeaturedProducts() {
+        List<Integer> randomNumbers = new Random()
+                .ints(10, 1, 129)
+                .boxed()
+                .collect(Collectors.toList());
+
+        List<Product> products = shopRepository.getFeaturedProducts(randomNumbers);
+        List<ProductDto> productDtos = new ArrayList<>();
+
+        for (Product product : products) {
+
+            double pretCuDiscount = product.getProductPrice() * (1 - product.getDiscount() / 100.0);
+            double pretFormatat = Math.round(pretCuDiscount * 10.0) / 10.0;
+
+            ProductDto productDto = new ProductDto();
+            productDto.setProductId(product.getProductId());
+            productDto.setCategory(product.getCategory());
+            productDto.setProductName(product.getProductName());
+            productDto.setProductDescription(product.getProductDescription());
+            productDto.setProductPrice(product.getProductPrice());
+            productDto.setDiscount(product.getDiscount());
+            productDto.setRating(product.getRating());
+            productDto.setVotesCount(product.getVotesCount());
+            productDto.setImage(product.getImage());
+            productDto.setBase64Image(product.getBase64Image());
+            productDto.setProductDiscountPrice(String.valueOf(pretFormatat));
+
+            productDtos.add(productDto);
+        }
+
+        return productDtos;
+    }
+
 
 
 }

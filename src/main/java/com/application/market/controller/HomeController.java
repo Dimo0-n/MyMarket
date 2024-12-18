@@ -25,9 +25,11 @@ public class HomeController {
     public String homeController(Model model) {
         List<Category> categories = categoryService.getAllCategories();
         List<ProductDto> bestSellingProducts = shopService.findBestSellingProducts();
+        List<ProductDto> featuredProducts = shopService.getFeaturedProducts();
 
         model.addAttribute("categories", categories);
         model.addAttribute("bestSellingProducts", bestSellingProducts);
+        model.addAttribute("featuredProducts", featuredProducts);
         return "index";
     }
 

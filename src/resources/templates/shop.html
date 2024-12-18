@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <title>Shop</title>
 
@@ -68,9 +69,12 @@
 </head>
 <body>
 
-<!-- Adaugă mesajul temporar aici, afară din containerul principal -->
-<div id="temporaryMessage" class="alert alert-success">
+<div sec:authorize="isAuthenticated()" id="temporaryMessage" class="alert alert-success">
   Product added to cart!
+</div>
+
+<div sec:authorize="!isAuthenticated()" id="temporaryMessageError" class="alert alert-danger">
+  Log in first!
 </div>
 
 <!-- Navbar start -->
@@ -243,9 +247,6 @@
             message.style.display = 'none';
           }, 500);
         }, 1000);
-      },
-      error: function() {
-        alert('Error adding product to cart');
       }
     });
   }

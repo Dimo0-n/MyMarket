@@ -27,34 +27,41 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void addToCart(int id, int quantity, String email) {
-        Optional<Product> product = shopRepository.findById((long) id);
+
+        Optional<Product> productOptional = shopRepository.findById((long) id);
+        if (productOptional.isEmpty()) {
+            throw new IllegalArgumentException("Produsul cu ID-ul specificat nu există.");
+        }
+
+        Product product = productOptional.get();
+
+        // Găsește utilizatorul după email
         Optional<User> userOptional = userRepository.findByEmail(email);
         User user = userOptional.get();
 
         CartItems cartItem = new CartItems();
-
-        cartItem.setCategory(product.get().getCategory());
-        cartItem.setDiscount(product.get().getDiscount());
-        cartItem.setPrice(product.get().getProductPrice());
-        cartItem.setBase64Image(product.get().getBase64Image());
-        cartItem.setProductName(product.get().getProductName());
+        cartItem.setCategory(product.getCategory());
+        cartItem.setDiscount(product.getDiscount());
+        cartItem.setPrice(product.getProductPrice());
+        cartItem.setBase64Image(product.getBase64Image());
+        cartItem.setProductName(product.getProductName());
         cartItem.setQuantity(quantity);
         cartItem.setUser(user);
 
         cartRepository.save(cartItem);
-
     }
 
     @Override
     public List<CartItems> getAllFromCart(String email) {
-
-        Optional<User> userOptional = userRepository.findByEmail(email);
-        User user = userOptional.get();
-
-        List<CartItems> cartItems = cartRepository.getAllFromCart(user.getId());
-
+        List<CartItems> cartItems = cartRepository.getAllFromCart(email);
         return cartItems;
 
     }
+
+    @Override
+    public void deleteProductsFromCart(String email) {
+        cartRepository.deleteProductsFromCart(email);
+    }
+
 
 }

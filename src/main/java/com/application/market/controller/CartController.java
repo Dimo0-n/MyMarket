@@ -9,6 +9,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
 
@@ -17,6 +20,9 @@ public class CartController {
 
     @Autowired
     private CartService cartService;
+
+    @Autowired
+    private UserController userController;
 
     @GetMapping("/cart")
     public String cart(Model model) {
@@ -31,15 +37,31 @@ public class CartController {
     }
 
     @PostMapping("/addToCart/{productId}")
-    public ResponseEntity<?> addToCart(@PathVariable int productId, @RequestBody CartItems request) {
-
+    public String addToCart(@PathVariable int productId, @RequestBody CartItems request, RedirectAttributes redirectAttributes) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
 
+        if (email == null || email.equals("anonymousUser")) {
+            redirectAttributes.addFlashAttribute("message", "Log in first!");
+            redirectAttributes.addFlashAttribute("messageType", "error");
+            return "redirect:/cart";
+        }
+
         cartService.addToCart(productId, request.getQuantity(), email);
-        return ResponseEntity.ok("Product added to cart");
+        redirectAttributes.addFlashAttribute("message", "Product added to cart!");
+        redirectAttributes.addFlashAttribute("messageType", "success");
+        return "redirect:/cart";
     }
 
 
+    @GetMapping("/all-products-remove")
+    public String deleteProductsFromCart() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        cartService.deleteProductsFromCart(email);
+
+        return "cart";
+    }
 
 }

@@ -31,6 +31,7 @@ public class CartItems {
     private Integer discount;
 
     @ManyToOne
+    @JoinColumn(name = "email", referencedColumnName = "email", nullable = false)
     private User user;
 
     @Lob
