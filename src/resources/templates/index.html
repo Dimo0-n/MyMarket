@@ -38,6 +38,44 @@
         transition: opacity 0.5s ease-out;
       }
 
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* fundal semi-transparent */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999; /* pentru a fi deasupra altor elemente */
+        display: none; /* inițial ascuns */
+      }
+
+      .alert-box {
+        background-color: #fff;
+        padding: 30px 45px; /* Crește padding-ul */
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 400px; /* Lățimea alert-box-ului */
+        height: auto;
+        max-width: 80%;
+        position: relative; /* Permite poziționarea butonului în interiorul box-ului */
+      }
+
+      /* Poziționează butonul X în colțul din dreapta sus */
+      .btn-close {
+        position: absolute;
+        top: 10px; /* Distanță față de partea de sus */
+        right: 10px; /* Distanță față de partea dreaptă */
+        background: none;
+        border: none;
+        font-size: 20px;
+        color: #000;
+        cursor: pointer;
+      }
+
     </style>
 
   </head>
@@ -47,11 +85,14 @@
     Product added to cart!
   </div>
 
-  <div sec:authorize="!isAuthenticated()" id="temporaryMessageError" class="alert alert-danger">
-    Log in first!
+  <div sec:authorize="!isAuthenticated()" id="temporaryMessageError" class="overlay">
+    <div class="alert-box">
+      <p>Log in first!</p>
+      <button type="button" class="btn-close" onclick="dismissAlert()">X</button>
+    </div>
   </div>
 
-    <!-- Navbar start -->
+  <!-- Navbar start -->
     <div th:replace="~{/fragments/navbar :: navbar}"></div>
     <!-- Navbar End -->
     
@@ -230,7 +271,7 @@
                           <div class="col-7">
                             <form id="addToCartForm" method="post" onsubmit="event.preventDefault(); addToCart(this)" class="d-flex align-items-center">
                               <!-- Câmpul pentru cantitate -->
-                              <input type="number" name="quantity" class="form-control border-dark-subtle input-number quantity" value="1" style="width: 80px;">
+                              <input type="number" name="quantity" class="form-control border-dark-subtle input-number quantity" value="1" style="width: 80px;" min="1" id="quantity-input">
 
                               <!-- Butonul care trimite cererea AJAX -->
                               <button type="submit" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart ms-2" th:data-id="${product.productId}">
@@ -366,14 +407,21 @@
                           <div class="col-7">
                             <form id="addToCartForm3" method="post" onsubmit="event.preventDefault(); addToCart(this)" class="d-flex align-items-center">
                               <!-- Câmpul pentru cantitate -->
-                              <input type="number" name="quantity" class="form-control border-dark-subtle input-number quantity" value="1" style="width: 80px;">
+                              <input type="number" name="quantity" class="form-control border-dark-subtle input-number quantity" value="1" style="width: 80px;" min="1" id="quantity-input2">
 
-                              <!-- Butonul care trimite cererea AJAX -->
-                              <button type="submit" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart ms-2" th:data-id="${product.productId}">
+                              <!-- Butonul pentru utilizatorii autentificați -->
+                              <button type="submit" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart ms-2" th:data-id="${product.productId}" sec:authorize="isAuthenticated()">
                                 <svg width="18" height="18">
                                   <use xlink:href="#cart"></use>
                                 </svg>
                                 Add to Cart
+                              </button>
+
+                              <!-- Butonul pentru utilizatorii neautentificați -->
+                              <button sec:authorize="!isAuthenticated()" href="/authentication" type="button" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart ms-2">
+                                <svg width="18" height="18">
+                                  <use xlink:href="#cart"></use>
+                                </svg>
                               </button>
 
                               <!-- Butonul de Favorite -->
@@ -383,7 +431,6 @@
                                 </svg>
                               </a>
                             </form>
-
                           </div>
                         </div>
                       </div>
@@ -646,45 +693,12 @@
         </div>
       </div>
     </div>
-    <script src="js/jquery-1.11.0.min.js"></script>
+
+  <script src="js/jquery-1.11.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
     <script src="js/plugins.js"></script>
     <script src="js/script.js"></script>
-
-  <script>
-    function addToCart(form) {
-      // Verifică dacă input-ul există și dacă valoarea poate fi preluată
-      var quantityInput = form.querySelector('input[name="quantity"]');
-      if (!quantityInput) {
-        alert('Quantity input not found');
-        return;
-      }
-
-      var quantity = quantityInput.value;
-      var productId = form.querySelector('button').getAttribute('data-id');
-
-      $.ajax({
-        url: '/addToCart/' + productId,
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({ productId: productId, quantity: quantity }),
-        success: function(response) {
-          // Arată mesajul de succes
-          var message = document.getElementById('temporaryMessage');
-          message.style.display = 'block';
-          message.style.opacity = 1;
-
-          setTimeout(function() {
-            message.style.opacity = 0;
-            setTimeout(function() {
-              message.style.display = 'none';
-            }, 500);
-          }, 1000);
-        }
-      });
-    }
-  </script>
-
+    <script src="js/index.js"></script>
   </body>
 </html>

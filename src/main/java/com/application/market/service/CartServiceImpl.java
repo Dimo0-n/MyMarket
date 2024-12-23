@@ -6,11 +6,9 @@ import com.application.market.entity.User;
 import com.application.market.repository.CartRepository;
 import com.application.market.repository.ShopRepository;
 import com.application.market.repository.UserRepository;
-import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +20,7 @@ public class CartServiceImpl implements CartService {
 
     @Autowired
     private ShopRepository shopRepository;
+
     @Autowired
     private UserRepository userRepository;
 
@@ -33,9 +32,10 @@ public class CartServiceImpl implements CartService {
             throw new IllegalArgumentException("Produsul cu ID-ul specificat nu există.");
         }
 
+        List<CartItems> cartItems = getAllFromCart(email);
+
         Product product = productOptional.get();
 
-        // Găsește utilizatorul după email
         Optional<User> userOptional = userRepository.findByEmail(email);
         User user = userOptional.get();
 
@@ -63,5 +63,16 @@ public class CartServiceImpl implements CartService {
         cartRepository.deleteProductsFromCart(email);
     }
 
+    public void deleteCartItem(int id){
+        cartRepository.deleteById(id);
+    }
+
+    @Override
+    public void updateQuantity(int id, int quantity) {
+        CartItems cartItem = cartRepository.getById(id);
+        cartItem.setQuantity(quantity);
+
+        cartRepository.save(cartItem);
+    }
 
 }

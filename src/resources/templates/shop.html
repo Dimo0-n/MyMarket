@@ -172,7 +172,7 @@
                       <div class="col-7">
                         <form id="addToCartForm" method="post" onsubmit="event.preventDefault(); addToCart(this)" class="d-flex align-items-center">
                           <!-- Câmpul pentru cantitate -->
-                          <input type="number" name="quantity" class="form-control border-dark-subtle input-number quantity" value="1" style="width: 80px;">
+                          <input type="number" name="quantity" class="form-control border-dark-subtle input-number quantity" value="1" style="width: 80px;" min="1" id="quantity-input">
 
                           <!-- Butonul care trimite cererea AJAX -->
                           <button type="submit" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart ms-2" th:data-id="${product.productId}">
@@ -220,7 +220,6 @@
 
 <script>
   function addToCart(form) {
-    // Verifică dacă input-ul există și dacă valoarea poate fi preluată
     var quantityInput = form.querySelector('input[name="quantity"]');
     if (!quantityInput) {
       alert('Quantity input not found');
@@ -250,6 +249,16 @@
       }
     });
   }
+</script>
+
+<script>
+  const quantityInput = document.getElementById('quantity-input');
+
+  quantityInput.addEventListener('input', function() {
+    if (parseInt(quantityInput.value) < 1) {
+      quantityInput.value = 1;
+    }
+  });
 </script>
 
 </body>

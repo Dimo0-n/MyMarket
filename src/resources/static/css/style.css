@@ -569,7 +569,15 @@ a.btn-link.text-light:after {
 	.navbar .has-megamenu{position:static!important;}
 	.navbar .megamenu{left:0; right:0; width:100%; margin-top:0;  }
 	
-}	
+}
+
+/*anuleaza toate efectele de animatie si translatie la iconite, stelute rating*/
+svg {
+  transform: none !important;
+  transition: none !important;
+  animation: none !important;
+}
+
 /* ============ desktop view .end// ============ */
 
 

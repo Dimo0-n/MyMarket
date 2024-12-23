@@ -55,7 +55,8 @@
           <h2 class="section-title">Your Cart</h2>
 
           <div class="d-flex align-items-center">
-            <a th:href="@{/all-products-remove}" class="btn btn-primary rounded-1">Delete All</a>
+            <a th:href="@{/chekout}" class="btn btn-primary rounded-1 me-4">Checkout</a>
+            <a th:href="@{/all-products-remove}" class="btn btn-primary rounded-1 me">Delete All</a>
           </div>
         </div>
 
@@ -76,7 +77,6 @@
               <th scope="col">Quantity</th>
               <th scope="col">Total</th>
               <th scope="col">Handle</th>
-              <th scope="col">Purchase</th>
             </tr>
             </thead>
             <th:block th:each="cartItem : ${cartItems}">
@@ -92,13 +92,13 @@
                   <p class="mb-0 mt-4" th:text="${cartItem.productName}"></p>
                 </td>
                 <td>
-                  <p class="mb-0 mt-4" th:text="${cartItem.price}"></p>
+                  <p class="mb-0 mt-4" th:text="${cartItem.price} + 'LEI'"></p>
                 </td>
                 <td>
-                  <p class="mb-0 mt-4" th:text="${cartItem.discount}"> %</p>
+                  <p class="mb-0 mt-4" th:text="${cartItem.discount} + '%'"></p>
                 </td>
                 <td>
-                  <form action="#" method="post">
+                  <form th:action="@{/update-quantity-{id}(id=${cartItem.id})}" method="post">
                     <div class="input-group align-items-center quantity mt-4" style="width: 150px;">
                       <input type="number" class="form-control form-control-sm text-center" name="quantity" min="1" th:value="${cartItem.quantity}">
                       <div class="input-group-btn">
@@ -112,15 +112,10 @@
                 </td>
 
                 <td>
-                  <form action="#" method="post" style="display: inline;">
+                  <form th:action="@{/delete-cart-item-{id}(id=${cartItem.id})}" method="post" style="display: inline;">
                     <button type="submit" class="btn btn-md rounded-circle bg-light border mt-4">
                       <i class="fa fa-times text-danger"></i>
                     </button>
-                  </form>
-                </td>
-                <td>
-                  <form action="#" method="post" style="display: inline;">
-                    <button type="submit" class="btn btn-success mt-4">Purchase</button>
                   </form>
                 </td>
               </tr>

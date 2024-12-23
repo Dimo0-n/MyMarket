@@ -21,9 +21,6 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
-    @Autowired
-    private UserController userController;
-
     @GetMapping("/cart")
     public String cart(Model model) {
 
@@ -53,7 +50,6 @@ public class CartController {
         return "redirect:/cart";
     }
 
-
     @GetMapping("/all-products-remove")
     public String deleteProductsFromCart() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -62,6 +58,18 @@ public class CartController {
         cartService.deleteProductsFromCart(email);
 
         return "cart";
+    }
+
+    @PostMapping("/delete-cart-item-{id}")
+    public String deleteCartItem(@PathVariable int id) {
+        cartService.deleteCartItem(id);
+        return "redirect:/cart";
+    }
+
+    @PostMapping("/update-quantity-{id}")
+    public String updateQuantity(@PathVariable int id, @RequestParam("quantity") int quantity) {
+        cartService.updateQuantity(id, quantity);
+        return "redirect:/cart";
     }
 
 }

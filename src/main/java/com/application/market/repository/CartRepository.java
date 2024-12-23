@@ -15,9 +15,10 @@ public interface CartRepository extends JpaRepository<CartItems, Integer> {
     List<CartItems> getAllFromCart(String email);
 
     @Modifying
-    @Query(value = "delete from cart_items where email = :email", nativeQuery = true)
+    @Query(value = "delete from cart_items where email =:email", nativeQuery = true)
     @Transactional
     void deleteProductsFromCart(@Param("email") String email);
 
+    void deleteById(int id);
 
 }

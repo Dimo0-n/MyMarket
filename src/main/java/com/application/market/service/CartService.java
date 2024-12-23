@@ -13,4 +13,8 @@ public interface CartService {
 
     void deleteProductsFromCart(String email);
 
+    void deleteCartItem(int id);
+
+    void updateQuantity(int id, int quantity);
+
 }
