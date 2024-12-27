@@ -33,4 +33,9 @@ public class HomeController {
         return "index";
     }
 
+    @GetMapping("/error404")
+    public String error404(){
+        return "error404";
+    }
+
 }

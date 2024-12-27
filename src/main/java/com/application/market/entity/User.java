@@ -26,11 +26,38 @@ public class User {
     @Column(unique = true, name = "username")
     private String username;
 
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "surname")
+    private String surname;
+
     @Column(unique = true, name = "email")
     private String email;
 
     @Column(name = "password")
     private String password;
+
+    @Column(name = "registerDate")
+    private LocalDateTime registerDate;
+
+    @Column(name = "lastLoginDate")
+    private LocalDateTime lastLoginDate;
+
+    @Column(name = "notify_new_products")
+    private boolean notifyNewProducts;
+
+    @Column(name = "notify_discounts")
+    private boolean notifyDiscounts;
+
+    @Column(name = "notify_news")
+    private boolean notifyNews;
+
+    @Column(name = "notify_weekly_updates")
+    private boolean notifyWeeklyUpdates;
+
+    @Column(name = "notification_frequency")
+    private String notificationFrequency;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable (
@@ -39,30 +66,4 @@ public class User {
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     private List<Role> roles = new ArrayList<>();
 
-    @Column(name = "registerDate")
-    private LocalDateTime registerDate;
-
-    @Column(name = "lastLoginDate")
-    private LocalDateTime lastLoginDate;
-
-    @Lob
-    @Column(name = "image",  columnDefinition = "LONGBLOB")
-    private byte[] image;
-
-    public String getBase64Image() {
-        if (this.image != null) {
-            return Base64.getEncoder().encodeToString(this.image);
-        }
-        return null;
-    }
-
-    public void setBase64Image(String base64Image) {
-        if (base64Image != null) {
-            this.image = Base64.getDecoder().decode(base64Image);
-        } else {
-            this.image = null;
-        }
-    }
-
 }
-
