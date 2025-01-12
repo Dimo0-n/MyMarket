@@ -694,11 +694,53 @@
       </div>
     </div>
 
+  <script>
+    function addToCart(form) {
+      var quantityInput = form.querySelector('input[name="quantity"]');
+      if (!quantityInput) {
+        alert('Quantity input not found');
+        return;
+      }
+
+      var quantity = quantityInput.value;
+      var productId = form.querySelector('button').getAttribute('data-id');
+
+      $.ajax({
+        url: '/addToCart/' + productId,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ productId: productId, quantity: quantity }),
+        success: function(response) {
+          // Arată mesajul de succes
+          var message = document.getElementById('temporaryMessage');
+          message.style.display = 'block';
+          message.style.opacity = 1;
+
+          setTimeout(function() {
+            message.style.opacity = 0;
+            setTimeout(function() {
+              message.style.display = 'none';
+            }, 500);
+          }, 1000);
+        }
+      });
+    }
+  </script>
+
+  <script>
+    const quantityInput = document.getElementById('quantity-input');
+
+    quantityInput.addEventListener('input', function() {
+      if (parseInt(quantityInput.value) < 1) {
+        quantityInput.value = 1;
+      }
+    });
+  </script>
+
   <script src="js/jquery-1.11.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
     <script src="js/plugins.js"></script>
     <script src="js/script.js"></script>
-    <script src="js/index.js"></script>
   </body>
 </html>

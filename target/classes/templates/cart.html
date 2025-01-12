@@ -108,7 +108,7 @@
                   </form>
                 </td>
                 <td>
-                  <p class="mb-0 mt-4" th:text="${#numbers.formatDecimal(cartItem.price * 1.0 - (cartItem.price * cartItem.discount) * 100 / 10000.0, 2, 2)}"> $</p>
+                  <p class="mb-0 mt-4" th:text="${#numbers.formatDecimal((cartItem.price * 1.0 - (cartItem.price * cartItem.discount) * 100 / 10000.0) * cartItem.quantity, 2, 2)}"> $</p>
                 </td>
 
                 <td>
