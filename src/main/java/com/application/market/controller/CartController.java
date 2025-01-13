@@ -21,6 +21,7 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
+
     @GetMapping("/cart")
     public String cart(Model model) {
 
@@ -37,12 +38,6 @@ public class CartController {
     public String addToCart(@PathVariable int productId, @RequestBody CartItems request, RedirectAttributes redirectAttributes) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-
-        if (email == null || email.equals("anonymousUser")) {
-            redirectAttributes.addFlashAttribute("message", "Log in first!");
-            redirectAttributes.addFlashAttribute("messageType", "error");
-            return "redirect:/cart";
-        }
 
         cartService.addToCart(productId, request.getQuantity(), email);
         redirectAttributes.addFlashAttribute("message", "Product added to cart!");

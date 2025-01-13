@@ -5,6 +5,7 @@ import com.application.market.entity.ProductDto;
 import com.application.market.service.ShopService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import com.application.market.entity.Category;
 import com.application.market.service.CategoryService;
@@ -56,6 +57,24 @@ public class ShopController {
         return "shop";
     }
 
+    @GetMapping("/category-{categoryName}")
+    public String getProductsByCategory(
+            @RequestParam(defaultValue = "0") int page,
+            @PathVariable String categoryName,
+            Model model) {
+
+        Pageable pageable = PageRequest.of(page, 20);
+        Page<ProductDto> productPage = shopService.getProductsByCategory(categoryName, pageable);
+
+        List<Category> categories = categoryService.getAllCategories();
+
+        model.addAttribute("categories", categories);
+        model.addAttribute("products", productPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", productPage.getTotalPages());
+
+        return "/shop";
+    }
 
 
-}
+    }

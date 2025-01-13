@@ -85,13 +85,6 @@
     Product added to cart!
   </div>
 
-  <div sec:authorize="!isAuthenticated()" id="temporaryMessageError" class="overlay">
-    <div class="alert-box">
-      <p>Log in first!</p>
-      <button type="button" class="btn-close" onclick="dismissAlert()">X</button>
-    </div>
-  </div>
-
   <!-- Navbar start -->
     <div th:replace="~{/fragments/navbar :: navbar}"></div>
     <!-- Navbar End -->

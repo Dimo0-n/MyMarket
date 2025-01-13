@@ -1,5 +1,6 @@
 package com.application.market.service;
 
+import com.application.market.controller.UserController;
 import com.application.market.entity.CartItems;
 import com.application.market.entity.Product;
 import com.application.market.entity.User;
@@ -23,6 +24,9 @@ public class CartServiceImpl implements CartService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserController userController;
 
     @Override
     public void addToCart(int id, int quantity, String email) {

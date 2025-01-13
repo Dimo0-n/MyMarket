@@ -1,5 +1,6 @@
 package com.application.market.repository;
 
+import com.application.market.entity.Category;
 import com.application.market.entity.Product;
 import com.application.market.entity.ProductDto;
 import org.springframework.data.domain.Page;
@@ -20,8 +21,10 @@ public interface ShopRepository extends JpaRepository<Product, Long> {
     @Query(value = "select * from products where category_id = :id", nativeQuery = true)
     Page<Product> findAllProductsByCategory(@Param("id") int id, Pageable pageable);
 
-
     @Query(value = "select * from products where product_id in (:ids)", nativeQuery = true)
     List<Product> getFeaturedProducts(@Param("ids") List<Integer> ids);
+
+    @Query(value = "select id from category where category_name = :categoryName", nativeQuery = true)
+    int findCategoryId(@Param("categoryName") String categoryName);
 
 }

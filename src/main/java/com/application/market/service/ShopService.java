@@ -12,5 +12,6 @@ public interface ShopService {
     List<ProductDto> findBestSellingProducts();
     Page<ProductDto> findAllProductsByCategory(Pageable pageable, int id);
     List<ProductDto> getFeaturedProducts();
+    Page<ProductDto> getProductsByCategory(String categoryName, Pageable pageable);
 
 }

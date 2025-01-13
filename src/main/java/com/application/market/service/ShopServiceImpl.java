@@ -138,6 +138,11 @@ public class ShopServiceImpl implements ShopService{
         return productDtos;
     }
 
-
+    @Override
+    public Page<ProductDto> getProductsByCategory(String categoryName, Pageable pageable){
+        int categoryId = shopRepository.findCategoryId(categoryName);
+        Page<ProductDto> productsDtos = findAllProductsByCategory(pageable, categoryId);
+        return productsDtos;
+    }
 
 }
