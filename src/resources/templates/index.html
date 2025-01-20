@@ -78,12 +78,38 @@
 
     </style>
 
+    <style>
+      #notification-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+      }
+
+      .notification {
+        padding: 10px 20px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        color: #fff;
+        font-size: 14px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        opacity: 0.9;
+        transition: opacity 0.3s ease;
+      }
+
+      .notification.success {
+        background-color: #4caf50;
+      }
+
+      .notification.error {
+        background-color: #d1170c;
+      }
+    </style>
+
   </head>
   <body>
 
-  <div sec:authorize="isAuthenticated()" id="temporaryMessage" class="alert alert-success">
-    Product added to cart!
-  </div>
+  <div id="notification-container"></div>
 
   <!-- Navbar start -->
     <div th:replace="~{/fragments/navbar :: navbar}"></div>
@@ -263,17 +289,13 @@
                         <div class="row g-1 mt-2">
                           <div class="col-7">
                             <form id="addToCartForm" method="post" onsubmit="event.preventDefault(); addToCart(this)" class="d-flex align-items-center">
-                              <!-- Câmpul pentru cantitate -->
-                              <input type="number" name="quantity" class="form-control border-dark-subtle input-number quantity" value="1" style="width: 80px;" min="1" id="quantity-input">
-
-                              <!-- Butonul care trimite cererea AJAX -->
+                              <input type="number" name="quantity" class="form-control border-dark-subtle input-number quantity" value="1" style="width: 80px;" min="1" id="quantity-input1">
                               <button type="submit" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart ms-2" th:data-id="${product.productId}">
                                 <svg width="18" height="18">
                                   <use xlink:href="#cart"></use>
                                 </svg>
                                 Add to Cart
                               </button>
-
                               <!-- Butonul de Favorite -->
                               <a href="#" class="btn btn-outline-dark rounded-1 p-2 fs-6 ms-2">
                                 <svg width="18" height="18">
@@ -398,25 +420,14 @@
                       <div class="button-area p-3 pt-0">
                         <div class="row g-1 mt-2">
                           <div class="col-7">
-                            <form id="addToCartForm3" method="post" onsubmit="event.preventDefault(); addToCart(this)" class="d-flex align-items-center">
-                              <!-- Câmpul pentru cantitate -->
-                              <input type="number" name="quantity" class="form-control border-dark-subtle input-number quantity" value="1" style="width: 80px;" min="1" id="quantity-input2">
-
-                              <!-- Butonul pentru utilizatorii autentificați -->
-                              <button type="submit" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart ms-2" th:data-id="${product.productId}" sec:authorize="isAuthenticated()">
+                            <form id="addToCartForm2" method="post" onsubmit="event.preventDefault(); addToCart(this)" class="d-flex align-items-center">
+                              <input type="number" name="quantity" class="form-control border-dark-subtle input-number quantity" value="1" style="width: 80px;" min="1" id="quantity-input">
+                              <button type="submit" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart ms-2" th:data-id="${product.productId}">
                                 <svg width="18" height="18">
                                   <use xlink:href="#cart"></use>
                                 </svg>
                                 Add to Cart
                               </button>
-
-                              <!-- Butonul pentru utilizatorii neautentificați -->
-                              <button sec:authorize="!isAuthenticated()" href="/authentication" type="button" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart ms-2">
-                                <svg width="18" height="18">
-                                  <use xlink:href="#cart"></use>
-                                </svg>
-                              </button>
-
                               <!-- Butonul de Favorite -->
                               <a href="#" class="btn btn-outline-dark rounded-1 p-2 fs-6 ms-2">
                                 <svg width="18" height="18">
@@ -688,36 +699,62 @@
     </div>
 
   <script>
-    function addToCart(form) {
-      var quantityInput = form.querySelector('input[name="quantity"]');
-      if (!quantityInput) {
-        alert('Quantity input not found');
-        return;
+    function checkLoginStatus(form) {
+      const isLoggedIn = localStorage.getItem("isLoggedIn") === "true"; // Sau verificare pe baza unui cookie
+      if (isLoggedIn) {
+        addToCart(form); // Funcția existentă pentru a adăuga în coș
+      } else {
+        loginRequired(); // Funcția pentru afișarea mesajului de logare
       }
-
-      var quantity = quantityInput.value;
-      var productId = form.querySelector('button').getAttribute('data-id');
-
-      $.ajax({
-        url: '/addToCart/' + productId,
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({ productId: productId, quantity: quantity }),
-        success: function(response) {
-          // Arată mesajul de succes
-          var message = document.getElementById('temporaryMessage');
-          message.style.display = 'block';
-          message.style.opacity = 1;
-
-          setTimeout(function() {
-            message.style.opacity = 0;
-            setTimeout(function() {
-              message.style.display = 'none';
-            }, 500);
-          }, 1000);
-        }
-      });
     }
+
+    function loginRequired() {
+      alert("Trebuie să fii logat pentru a adăuga produse în coș!");
+      // Opțional: Redirecționare către pagina de autentificare
+      // window.location.href = "/login";
+    }
+
+  </script>
+
+  <script>
+    function addToCart(form) {
+      const productId = form.querySelector(".btn-cart").getAttribute("data-id");
+      const quantity = form.querySelector("input[name='quantity']").value;
+
+      fetch(`/addToCart/${productId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ quantity: quantity }),
+      })
+              .then(response => response.json())
+              .then(data => {
+                if (data.messageType === "error") {
+                  displayNotification(data.message, data.messageType);
+                } else if (data.messageType === "success") {
+                  displayNotification(data.message, data.messageType);
+                }
+              })
+              .catch(error => {
+                console.error("Error adding to cart:", error);
+                displayNotification("A apărut o eroare. Încearcă din nou.", "error");
+              });
+    }
+
+    function displayNotification(message, type) {
+      const notificationContainer = document.getElementById("notification-container");
+      const notification = document.createElement("div");
+      notification.className = `notification ${type}`;
+      notification.textContent = message;
+
+      notificationContainer.appendChild(notification);
+
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    }
+
   </script>
 
   <script>
