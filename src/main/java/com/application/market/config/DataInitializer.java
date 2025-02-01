@@ -108,16 +108,35 @@ public class DataInitializer {
     }
 
     //pentru producte
-    byte[] loadImage(String imagePath) {
+    private byte[] loadImage(String imagePath) {
         try {
+            // Dimensiuni fixe pentru imagine
+            int width = 200;
+            int height = 210;
+
+            // Încarcă imaginea din calea specificată
             ClassPathResource resource = new ClassPathResource(imagePath);
             InputStream inputStream = resource.getInputStream();
-            return inputStream.readAllBytes();
+
+            // Citește imaginea ca BufferedImage
+            BufferedImage originalImage = ImageIO.read(inputStream);
+
+            // Redimensionează imaginea la dimensiunea dorită
+            BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            Graphics2D g = resizedImage.createGraphics();
+            g.drawImage(originalImage, 0, 0, width, height, null);
+            g.dispose();
+
+            // Convertește imaginea redimensionată într-un array de bytes
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(resizedImage, "jpg", baos);
+            return baos.toByteArray();
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
+
 
     private void addProducts() {
         List<Product> productList = List.of(
@@ -329,7 +348,7 @@ public class DataInitializer {
                         "Chicken Thighs",
                         "Pulpe de pui fragede și delicioase, ideale pentru grătar.",
                         15.99, 20, 4.5, 120,
-                        loadImage("static/images/products/3/chickenThighs.jpg")),
+                        loadImage("static/images/products/3/chickenThighs.png")),
 
                 new Product(36L, categoryRepository.findById(3).get(),
                         "Chicken Wings",
