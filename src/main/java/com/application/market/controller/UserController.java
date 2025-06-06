@@ -50,6 +50,9 @@ public class UserController {
         if (existingUserByEmail.isPresent()) {
             bindingResult.rejectValue("email", null, "There is already an account registered with that email");
         }
+        if (existingUserByEmail.isPresent()) {
+            bindingResult.rejectValue("username", null, "There is already an account registered with that username");
+        }
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("user", user);

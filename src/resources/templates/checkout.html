@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout</title>
+    <link rel="stylesheet" th:href="@{/css/checkout.css}">
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <button class="proceed">
+            <svg class="sendicon" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z"></path>
+            </svg>
+        </button>
+
+        <img src="https://seeklogo.com/images/V/VISA-logo-62D5B26FE1-seeklogo.com.png" class="logo-card">
+
+        <!-- === NUMĂR CARD === -->
+        <label for="cardNumber">Card number:</label>
+        <input
+                id="cardNumber"
+                name="cardNumber"
+                type="text"
+                class="input cardnumber"
+                placeholder="1234 5678 9101 1234"
+                autocomplete="cc-number"
+                maxlength="19" inputmode="numeric" required>
+
+        <!-- === NUME TITULAR === -->
+        <label for="cardName">Full Name:</label>
+        <input
+                id="cardName"
+                name="cardName"
+                type="text"
+                class="input name"
+                placeholder="Edgar Pérez"
+                autocomplete="cc-name" required>
+
+        <!-- === CVV === -->
+        <label for="ccv" class="toleft">CCV:</label>
+        <input
+                id="ccv"
+                name="ccv"
+                type="text"
+                class="input toleft ccv"
+                placeholder="321"
+                maxlength="3"
+                inputmode="numeric" required>
+    </div>
+
+    <div class="receipt">
+        <div class="col total-container">
+            <p>Total:</p>
+            <h2 class="cost">$400</h2>
+        </div>
+
+        <div class="col promo-container">
+            <p>Promo Code:</p>
+            <input
+                    id="promoCode"
+                    name="promoCode"
+                    type="text"
+                    class="input promocode"
+                    placeholder="Enter promo code"
+            >
+        </div>
+
+        <p class="comprobe">This information will be sent to your email</p>
+    </div>
+</div>
+
+<script>
+    /*************************************************************
+     * 1) Formatarea și validarea în timp real a numerelor de card
+     *************************************************************/
+    const cardInput = document.getElementById('cardNumber');
+    cardInput.addEventListener('input', function (e) {
+        // Eliminăm tot ce nu e cifră, apoi luăm max 12 cifre
+        let onlyDigits = e.target.value.replace(/\D/g, '').substring(0, 16);
+        // Împărțim în grupuri de câte 4 cifre
+        let groups = onlyDigits.match(/.{1,4}/g);
+        e.target.value = groups ? groups.join(' ') : '';
+
+        // Dacă s-au introdus 12 cifre, border-ul devine normal; altfel roșu
+        if (onlyDigits.length === 16) {
+            cardInput.style.borderBottom = '1px solid #1abc9c';
+        } else {
+            cardInput.style.borderBottom = '1px solid #e74c3c';
+        }
+    });
+
+    /*************************************************
+     * 2) Validarea în timp real a CCV-ului (3 cifre)
+     *************************************************/
+    const ccvInput = document.getElementById('ccv');
+    ccvInput.addEventListener('input', function (e) {
+        // Permitem doar cifre și maxim 3 caractere
+        let onlyDigits = e.target.value.replace(/\D/g, '').substring(0, 3);
+        e.target.value = onlyDigits;
+
+        // Dacă are exact 3 cifre, border-ul devine normal; altfel roșu
+        if (onlyDigits.length === 3) {
+            ccvInput.style.borderBottom = '1px solid #1abc9c';
+        } else {
+            ccvInput.style.borderBottom = '1px solid #e74c3c';
+        }
+    });
+
+    /**************************************************
+     * 3) Validarea în timp real a câmpului „Name” (nu gol)
+     **************************************************/
+    const nameInput = document.getElementById('cardName');
+    nameInput.addEventListener('input', function () {
+        if (nameInput.value.trim().length > 0) {
+            nameInput.style.borderBottom = '1px solid #1abc9c';
+        } else {
+            nameInput.style.borderBottom = '1px solid #e74c3c';
+        }
+    });
+</script>
+
+</body>
+</html>
