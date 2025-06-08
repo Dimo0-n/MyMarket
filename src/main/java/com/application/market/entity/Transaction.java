@@ -3,6 +3,7 @@ package com.application.market.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -10,7 +11,7 @@ import java.util.Date;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Transactions {
+public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,9 +30,9 @@ public class Transactions {
     String cardNumber;
 
     @Column(name = "data_of_transaction", nullable = false)
-    Date dataOfTransaction;
+    LocalDateTime dataOfTransaction;
 
     @Column(name = "total_price", nullable = false)
-    Long totalPrice;
+    Double totalPrice;
 
 }

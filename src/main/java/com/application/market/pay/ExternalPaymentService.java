@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ExternalPaymentService {
-
+    //Aici ar trebuie sa fie plata pe un sistem de plata
     private final int SUCCESS_CODE = 10099;
     private final int FAILURE_CODE = 20077;
 

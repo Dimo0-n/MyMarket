@@ -1,8 +1,6 @@
 package com.application.market.repository;
 
-import com.application.market.entity.Category;
 import com.application.market.entity.Product;
-import com.application.market.entity.ProductDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

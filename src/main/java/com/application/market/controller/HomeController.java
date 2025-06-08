@@ -1,8 +1,7 @@
 package com.application.market.controller;
 
 import com.application.market.entity.Category;
-import com.application.market.entity.Product;
-import com.application.market.entity.ProductDto;
+import com.application.market.dto.ProductDto;
 import com.application.market.service.CategoryService;
 import com.application.market.service.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;

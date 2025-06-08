@@ -1,5 +1,6 @@
-package com.application.market.entity;
+package com.application.market.dto;
 
+import com.application.market.entity.Category;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

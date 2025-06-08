@@ -1,4 +1,4 @@
-package com.application.market.entity;
+package com.application.market.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
