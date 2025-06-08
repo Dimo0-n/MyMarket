@@ -2,7 +2,9 @@ package com.application.market.config;
 
 import com.application.market.entity.Category;
 import com.application.market.entity.Product;
+import com.application.market.entity.PromoCode;
 import com.application.market.repository.CategoryRepository;
+import com.application.market.repository.PromoCodeRepository;
 import com.application.market.repository.ShopRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Component
@@ -26,9 +29,15 @@ public class DataInitializer {
     @Autowired
     private ShopRepository shopRepository;
 
-    public DataInitializer(CategoryRepository categoryRepository, ShopRepository shopRepository) {
+    @Autowired
+    private PromoCodeRepository promoCodeRepository;
+
+    public DataInitializer(CategoryRepository categoryRepository,
+                           ShopRepository shopRepository,
+                           PromoCodeRepository promoCodeRepository) {
         this.categoryRepository = categoryRepository;
         this.shopRepository = shopRepository;
+        this.promoCodeRepository = promoCodeRepository;
     }
 
 
@@ -59,9 +68,10 @@ public class DataInitializer {
     }
 
     @PostConstruct
-    public void init() {
+    public void init() throws Exception {
         addCategories();
         addProducts();
+        addPromoCodes();
     }
 
     private void addCategories() {
@@ -105,6 +115,19 @@ public class DataInitializer {
 
         categoryRepository.saveAll(categoriesList);
 
+    }
+
+    private void addPromoCodes() throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        List<PromoCode> promoCodesList = List.of(
+                new PromoCode(null, "WELCOME10", 10, sdf.parse("2025-12-31")),
+                new PromoCode(null, "SUMMER15", 15, sdf.parse("2025-08-31")),
+                new PromoCode(null, "BLACKFRIDAY20", 20, sdf.parse("2025-11-30")),
+                new PromoCode(null, "NEWYEAR25", 25, sdf.parse("2026-01-15"))
+        );
+
+        promoCodeRepository.saveAll(promoCodesList);
     }
 
     //pentru producte

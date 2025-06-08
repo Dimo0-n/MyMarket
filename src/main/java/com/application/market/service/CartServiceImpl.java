@@ -10,8 +10,12 @@ import com.application.market.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class CartServiceImpl implements CartService {
@@ -36,8 +40,6 @@ public class CartServiceImpl implements CartService {
             throw new IllegalArgumentException("Produsul cu ID-ul specificat nu există.");
         }
 
-        List<CartItems> cartItems = getAllFromCart(email);
-
         Product product = productOptional.get();
 
         Optional<User> userOptional = userRepository.findByEmail(email);
@@ -56,10 +58,22 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public List<CartItems> getAllFromCart(String email) {
-        List<CartItems> cartItems = cartRepository.getAllFromCart(email);
-        return cartItems;
+    public Map<String, Object> getAllFromCart(String email) {
 
+        Iterable<CartItems> cartItemsIt = cartRepository.getAllFromCart(email);
+        List<CartItems> cartItems = StreamSupport.stream(cartItemsIt.spliterator(), false)
+                .collect(Collectors.toList());
+
+        double totalPrice = cartItems.stream()
+                .mapToDouble(item -> item.getPrice() * item.getQuantity())
+                .sum();
+        totalPrice = Math.round(totalPrice * 100.0) / 100.0;
+
+        Map<String, Object> items = new HashMap<>();
+        items.put("cartItems", cartItems);
+        items.put("totalPrice", totalPrice);
+
+        return items;
     }
 
     @Override

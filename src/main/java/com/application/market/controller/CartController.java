@@ -1,12 +1,16 @@
 package com.application.market.controller;
 
+import com.application.market.entity.CardData;
 import com.application.market.entity.CartItems;
 import com.application.market.service.CartService;
+import com.application.market.service.CartServiceImpl;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +21,8 @@ import org.springframework.web.servlet.view.RedirectView;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Controller
 public class CartController {
@@ -24,15 +30,16 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
-
     @GetMapping("/cart")
-    public String cart(Model model) {
+    public String cart(Model model, HttpSession session) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
 
-        List<CartItems> cartItems = cartService.getAllFromCart(email);
-        model.addAttribute("cartItems", cartItems);
+        Map<String, Object> items =  cartService.getAllFromCart(email);
+
+        model.addAttribute("cartItems", items.get("cartItems"));
+        session.setAttribute("totalPrice", items.get("totalPrice"));
 
         return "cart";
     }
